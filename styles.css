@@ -5,19 +5,22 @@
     font-family: 'Share Tech Mono', monospace;
 }
 
-body {
-    background: linear-gradient(135deg, #1b263b, #415a77);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    color: white;
+body{
+    background:linear-gradient(135deg,#1b263b,#415a77);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:100dvh;
+    color:white;
+    padding:15px;
+    overflow-x:hidden;
 }
 
 #board,
-.boardInfo {
-    width: 500px;
+.boardInfo{
+    width:min(92vw,500px);
+    margin-top:15px;
 }
 
 #board {
@@ -48,9 +51,9 @@ body {
 #pause{
     color:white;
     border:none;
-    padding:10px 18px;
+    padding:clamp(8px,2vw,10px) clamp(12px,3vw,18px);
     border-radius:8px;
-    font-size:20px;
+    font-size:clamp(15px,4vw,20px);
     cursor:pointer;
     transition:.25s;
 }
@@ -561,14 +564,14 @@ body {
 
 #mobileControls{
     display:none;
-    margin-top:30px;
+    margin-top:15px;
     text-align:center;
 }
 
 #mobileControls button{
 
-    width:75px;
-    height:75px;
+width:clamp(50px,15vw,75px);
+height:clamp(50px,15vw,75px);
 
     margin:8px;
 
@@ -578,7 +581,7 @@ body {
     background:#2d6cdf;
     color:white;
 
-    font-size:32px;
+    font-size:clamp(22px,6vw,32px);
     font-weight:bold;
 
     cursor:pointer;
@@ -606,7 +609,34 @@ body {
 
 }
 
-.gameButtons{
-    display:flex;
-    gap:12px;
+
+@media (max-height:700px){
+
+    body{
+        padding:8px;
+    }
+
+    #board{
+        width:min(78vw,360px);
+    }
+
+    .boardInfo{
+        width:min(82vw,380px);
+        font-size:18px;
+        margin-top:10px;
+    }
+
+    #mobileControls{
+        margin-top:10px;
+    }
+
+    #mobileControls button{
+
+        width:58px;
+        height:58px;
+        font-size:24px;
+        margin:4px;
+
+    }
+
 }
