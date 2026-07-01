@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Tablero -->
+    <div id="board"></div>
+
+    <!-- Información del juego -->
+    <div class="boardInfo">
+
+        <div class="infoBox">
+            <span>Puntaje</span>
+            <div id="scoreBoard">0</div>
+        </div>
+
+        <div class="infoBox">
+            <span>Nivel</span>
+            <div id="levelBoard">1</div>
+        </div>
+
+        <div class="gameButtons">
+            <button id="start">▶ Iniciar</button>
+            <button id="pause">⏸ Pausar</button>
+        </div>
+
+    </div>
+
+    <!-- Game Over -->
+    <div id="gameOver">Game Over</div>
+
+    <!-- Controles táctiles -->
+    <div id="mobileControls">
+
+        <button id="up">▲</button>
+
+        <div class="middleControls">
+            <button id="left">◀</button>
+            <button id="down">▼</button>
+            <button id="right">▶</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

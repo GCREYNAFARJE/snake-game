@@ -1,0 +1,612 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+body {
+    background: linear-gradient(135deg, #1b263b, #415a77);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: white;
+}
+
+#board,
+.boardInfo {
+    width: 500px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    border: 4px solid #0d1b2a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.boardInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    font-size: 24px;
+}
+
+#scoreBoard {
+    display: inline-block;
+    font-weight: bold;
+    color: #ccf47f;
+    margin-left: 8px;
+}
+
+#start,
+#pause{
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:20px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+#start{
+    background:#f35a69;
+}
+
+#start:hover{
+    background:#ff4157;
+    transform:translateY(-2px);
+}
+
+#start:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+#pause{
+    background:#2d6cdf;
+}
+
+#pause:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#gameOver {
+    display: none;
+    margin-top: 20px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ff4d4d;
+    text-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
+}
+
+.square {
+    aspect-ratio: 1;
+    transition: background-color .15s ease;
+}
+
+/* Animación suave únicamente en color y sombra */
+.snakeHead,
+.snakeBody,
+.snakeTail {
+    transition:
+        background .15s ease,
+        box-shadow .15s ease;
+}
+
+/* Casillas vacías */
+.emptySquare {
+    background: #456990;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ========================================== */
+/* NUEVO DISEÑO CARICATURESCO (DIRECTO)   */
+/* ========================================== */
+
+/* --- LA CABEZA DE LA SERPIENTE --- */
+.snakeHead {
+    position: relative;
+    background: linear-gradient(135deg, #a3e635, #65a30d); /* Verde manzana brillante */
+    border-radius: 50% 50% 40% 40%; /* Forma de cabeza redondeada */
+    box-shadow: inset -2px -2px 6px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Ojos saltones y alegres (Simétricos) */
+.snakeHead::before {
+    content: "";
+    position: absolute;
+    top: 15%;
+    width: 22%;
+    height: 35%;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    
+    /* Ojo izquierdo por defecto */
+    left: 20%;
+    /* Pupila alegre (Mirando al frente/arriba) */
+    background-image: radial-gradient(circle at 50% 40%, #000 35%, #fff 36%, #fff 45%, transparent 46%);
+}
+
+.snakeHead::after {
+    content: "";
+    position: absolute;
+    top: 15%;
+    width: 22%;
+    height: 35%;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    
+    /* Ojo derecho */
+    right: 20%;
+    background-image: radial-gradient(circle at 50% 40%, #000 35%, #fff 36%, #fff 45%, transparent 46%);
+}
+
+/* Brillo en las mejillas y Lengua bífida (Añadido dinámico mediante un contenedor interno) */
+.snakeHead-details {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+/* Lengua caritaturesca */
+.snakeHead-details::before {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 10px;
+    background: #ef4444; /* Rojo vivo */
+    border-radius: 2px;
+    /* Efecto bífido usando clip-path */
+    clip-path: polygon(0% 0%, 100% 0%, 100% 70%, 70% 100%, 50% 70%, 30% 100%, 0% 70%);
+    animation: wiggleTongue 0.2s infinite alternate;
+}
+
+/* --- EL CUERPO (Mosaicos con texturas de escamas brillantes) --- */
+.snakeBody {
+    position: relative;
+    background: linear-gradient(135deg, #84cc16, #4d7c0f);
+    border-radius: 35%; /* Segmentos redondeados amigables */
+    transform: scale(0.92); /* Pequeña separación para notar los segmentos */
+}
+
+/* Brillo de luz superior para dar volumen 3D */
+.snakeBody::before {
+    content: "";
+    position: absolute;
+    top: 12%;
+    left: 12%;
+    width: 30%;
+    height: 30%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    filter: blur(0.5px);
+}
+
+/* Patrón de escamas amarillas alegres */
+.snakeBody::after {
+    content: "";
+    position: absolute;
+    bottom: 15%;
+    right: 15%;
+    width: 25%;
+    height: 25%;
+    background: #facc15; /* Puntito amarillo de caricatura */
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+/* --- LA COLA (Se va encogiendo) --- */
+.snakeTail {
+    background: linear-gradient(135deg, #84cc16, #3f6212);
+    border-radius: 50% 20% 20% 50%; /* Punta más fina */
+    transform: scale(0.75); /* Más pequeña que el cuerpo */
+    box-shadow: inset -1px -1px 4px rgba(0,0,0,0.3);
+}
+
+/* --- NUEVA COMIDA (Manzana muy detallada) --- */
+.foodSquare {
+    position: relative;
+    background: radial-gradient(circle at 40% 40%, #f87171 20%, #dc2626 70%, #991b1b 100%); /* Efecto esfera */
+    border-radius: 50% 50% 45% 45%; /* Forma de manzana */
+    transform: scale(0.78);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* Tallo de la manzana */
+.foodSquare::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-10deg);
+    width: 4px;
+    height: 8px;
+    background: #78350f;
+    border-radius: 2px;
+}
+
+/* Hoja verde brillante */
+.foodSquare::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 55%;
+    width: 10px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 10px 0 10px 0; /* Forma de hoja */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Animación para que la lengua se mueva */
+@keyframes wiggleTongue {
+    0% { height: 9px; }
+    100% { height: 12px; }
+}
+
+/*=====================================
+        PANTALLA DE NIVELES
+======================================*/
+
+#levelMessage{
+    position: fixed;
+    inset: 0;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.75);
+
+    z-index:9999;
+
+    opacity:0;
+    visibility:hidden;
+    transition:.3s;
+}
+
+#levelMessage.show{
+    opacity:1;
+    visibility:visible;
+}
+
+#playAgain{
+    position:relative;
+    z-index:10000;
+    pointer-events:auto;
+}
+
+#levelMessage.show{
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+#levelMessage .emoji{
+    font-size:90px;
+    animation:bounce .7s infinite alternate;
+}
+
+#levelMessage .title{
+    margin-top:20px;
+    font-size:60px;
+    color:#ffe600;
+    font-weight:bold;
+    text-shadow:0 0 20px gold;
+}
+
+#levelMessage .subtitle{
+    margin-top:25px;
+    font-size:34px;
+    color:white;
+    letter-spacing:4px;
+    text-align:center;
+}
+
+#levelMessage .level{
+    margin-top:15px;
+    font-size:75px;
+    color:#32ff7e;
+    font-weight:bold;
+    text-shadow:0 0 20px #32ff7e;
+}
+
+@keyframes bounce{
+
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.15);
+    }
+
+}
+
+
+
+#levelMessage .score{
+    margin-top:25px;
+    font-size:30px;
+    color:white;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+#levelMessage .score span{
+    font-size:55px;
+    color:#ffe600;
+    font-weight:bold;
+}
+
+#playAgain{
+    margin-top:35px;
+    padding:15px 35px;
+    border:none;
+    border-radius:10px;
+    background:#32cd32;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+#playAgain:hover{
+    transform:scale(1.08);
+    background:#28a428;
+}
+
+
+/* ========================= */
+/*        RESPONSIVE         */
+/* ========================= */
+
+/* Tablets */
+@media (max-width: 768px) {
+
+    body {
+        padding: 20px;
+    }
+
+    #board,
+    .boardInfo {
+        width: 90vw;
+        max-width: 500px;
+    }
+
+    .boardInfo {
+        font-size: 20px;
+    }
+
+    .gameButtons{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+
+.infoBox{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+}
+
+    #start {
+        font-size: 18px;
+        padding: 10px 16px;
+    }
+
+    #gameOver {
+        font-size: 30px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+
+    body {
+        padding: 15px;
+    }
+
+    #board,
+    .boardInfo {
+        width: 95vw;
+    }
+
+    .boardInfo {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    #start {
+        width: 100%;
+        font-size: 18px;
+        padding: 12px;
+    }
+
+    #gameOver {
+        font-size: 24px;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 360px) {
+
+    .boardInfo {
+        font-size: 16px;
+    }
+
+    #start {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    #gameOver {
+        font-size: 20px;
+    }
+}
+
+/* ============================= */
+/* MENSAJE DE CAMBIO DE NIVEL */
+/* ============================= */
+
+#levelMessage{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.82);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    opacity:0;
+    visibility:hidden;
+
+    transform:scale(.6);
+    transition:.5s;
+
+    z-index:9999;
+}
+
+#levelMessage.show{
+    opacity:1;
+    visibility:visible;
+    transform:scale(1);
+}
+
+#levelMessage .emoji{
+    font-size:90px;
+    animation:bounce .7s infinite alternate;
+}
+
+#levelMessage .title{
+    margin-top:20px;
+    font-size:60px;
+    font-weight:bold;
+    color:#ffe600;
+}
+
+#levelMessage .subtitle{
+    margin-top:20px;
+    font-size:34px;
+    color:white;
+}
+
+#levelMessage .level{
+    margin-top:15px;
+    font-size:70px;
+    color:#00ff88;
+    font-weight:bold;
+}
+
+@keyframes bounce{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(-20px);
+    }
+
+}
+
+
+/* ========================= */
+/* CONTROLES PARA CELULAR */
+/* ========================= */
+
+#mobileControls{
+    display:none;
+    margin-top:30px;
+    text-align:center;
+}
+
+#mobileControls button{
+
+    width:75px;
+    height:75px;
+
+    margin:8px;
+
+    border:none;
+    border-radius:18px;
+
+    background:#2d6cdf;
+    color:white;
+
+    font-size:32px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+#mobileControls button:active{
+    transform:scale(.9);
+    background:#1d4ed8;
+}
+
+.middleControls{
+    display:flex;
+    justify-content:center;
+}
+
+/* Mostrar solamente en celulares */
+
+@media (max-width:768px){
+
+    #mobileControls{
+        display:block;
+    }
+
+}
+
+.gameButtons{
+    display:flex;
+    gap:12px;
+}
